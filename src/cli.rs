@@ -5,6 +5,11 @@ const HELP_STR: &'static str = "Usage: rolcat [<option>] <file>...\n
 Available Options:
     -h, --help      Show this message
     -v, --version   Print version
+    -i --invert     Colour background instead of foreground
+    --seed          Seed from which colour starts
+                    It must be a hue value
+                    Usage: rolcat --seed <int> <file>...
+                    Default: <random>
     -d, -dir        Choose the direction for colour shift to occur
                     Usage: rolcat -dir <dir> <file>...
                     Available directions: [tr, t, tl, r, l, br, b, bl] where:
@@ -35,7 +40,7 @@ pub fn parse(args: &Vec<String>) -> Option<(Options, usize)> {
                 let line_shift = options.line_shift();
                 let char_shift = options.char_shift();
                 for line in HELP_STR.split("\n") {
-                    print(line, h, char_shift);
+                    print(line, h, char_shift, options.invert());
                     h += line_shift;
                 }
                 return None;
@@ -47,8 +52,32 @@ pub fn parse(args: &Vec<String>) -> Option<(Options, usize)> {
                     &format!("rolcat version: {}", version),
                     h,
                     options.char_shift(),
+                    options.invert(),
                 );
                 return None;
+            }
+
+            "-i" | "--invert" => {
+                options.set_invert(true);
+            }
+
+            "--seed" => {
+                i += 1;
+                if i == len {
+                    eprintln!("A valid hue must be supplied");
+                    return None;
+                } else {
+                    match args[i].parse::<u16>() {
+                        Ok(seed) => {
+                            options.set_seed(seed);
+                            h = options.seed();
+                        }
+                        Err(e) => {
+                            eprintln!("Valid Integer must be supplied\n\n{}", e);
+                            return None;
+                        }
+                    }
+                }
             }
 
             "-d" | "-dir" => {

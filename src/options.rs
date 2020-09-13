@@ -15,6 +15,7 @@ pub struct Options {
     seed: f32,
     shift: f32,
     direction: Direction,
+    invert: bool,
 }
 
 impl Default for Options {
@@ -23,6 +24,7 @@ impl Default for Options {
             seed: rand::random::<f32>() * 360.,
             shift: 2.0,
             direction: Direction::BottomRight,
+            invert: false,
         }
     }
 }
@@ -56,7 +58,15 @@ impl Options {
         self.seed
     }
 
-    pub fn set_seed(&mut self, seed: f32) {
-        self.seed = seed;
+    pub fn set_seed(&mut self, seed: u16) {
+        self.seed = (seed % 360) as f32;
+    }
+
+    pub fn invert(&self) -> bool {
+        self.invert
+    }
+
+    pub fn set_invert(&mut self, invert: bool) {
+        self.invert = invert;
     }
 }

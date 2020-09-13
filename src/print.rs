@@ -1,8 +1,12 @@
-pub fn print(s: &str, h: f32, shift: f32) {
+pub fn print(s: &str, h: f32, shift: f32, invert: bool) {
     let mut h = h;
     for chr in s.split("") {
         let (r, g, b) = get_rgb(h);
-        print!("\x1B[38;2;{};{};{}m{}\x1B[0m", r, g, b, chr);
+        if invert {
+            print!("\x1B[38;5;15;48;2;{};{};{}m{}\x1B[0m", r, g, b, chr);
+        } else {
+            print!("\x1B[38;2;{};{};{}m{}\x1B[0m", r, g, b, chr);
+        }
         h = (360.0 + h + shift) % 360.0;
     }
     println!();

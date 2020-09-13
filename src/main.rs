@@ -20,6 +20,7 @@ fn main() -> io::Result<()> {
 
     let char_shift = options.char_shift();
     let line_shift = options.line_shift();
+    let invert = options.invert();
 
     let mut h = options.seed();
 
@@ -31,7 +32,7 @@ fn main() -> io::Result<()> {
         }
 
         for line in reader.lines() {
-            print(&line?, h, char_shift);
+            print(&line?, h, char_shift, invert);
             h = (360.0 + h + line_shift) % 360.0;
         }
 
