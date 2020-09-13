@@ -135,21 +135,21 @@ fn print(s: &str, h: f32, shift: f32) {
 fn get_rgb(h: f32) -> (u8, u8, u8) {
     let hv = h / 60.;
     let hi = hv.floor() % 6.;
-    let f = hv - hi;
-    let q = 1. - f;
-    let t = 1. - (1. - f);
+    let f = (hv - hi) * 255.0;
+    let q = 255.0 - f;
+
     if hi == 0. {
-        (255, (255.0 * t) as u8, 0)
+        (255, f as u8, 0)
     } else if hi == 1. {
-        ((255.0 * q) as u8, 255, 0)
+        (q as u8, 255, 0)
     } else if hi == 2. {
-        (0, 255, (255.0 * t) as u8)
+        (0, 255, f as u8)
     } else if hi == 3. {
-        (0, (255.0 * q) as u8, 255)
+        (0, q as u8, 255)
     } else if hi == 4. {
-        ((255.0 * t) as u8, 0, 255)
+        (f as u8, 0, 255)
     } else if hi == 5. {
-        (255, 0, (255.0 * q) as u8)
+        (255, 0, q as u8)
     } else {
         println!("---- UNREACHABLE ----");
         println!("h: {}, hv: {}, hi: {}", h, hv, hi);
