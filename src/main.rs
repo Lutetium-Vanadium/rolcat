@@ -59,9 +59,9 @@ fn main() -> io::Result<()> {
                 if i == len {
                     return Ok(eprintln!("A integer must be supplied"));
                 } else {
-                    match args[i].parse::<u8>() {
+                    match args[i].parse::<i16>() {
                         Ok(shift) => options.set_shift(shift),
-                        Err(e) => return Ok(eprintln!("{}", e)),
+                        Err(e) => return Ok(eprintln!("Valid Integer must be supplied\n\n{}", e)),
                     }
                 }
             }
@@ -70,8 +70,6 @@ fn main() -> io::Result<()> {
 
         i += 1;
     }
-
-    println!("{} - {}; Options: {:?}", i, len, options);
 
     if i == len {
         return Ok(eprintln!("A text file must be supplied"));

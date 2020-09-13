@@ -42,7 +42,7 @@ impl Options {
         }
     }
 
-    pub fn set_shift(&mut self, shift: u8) {
+    pub fn set_shift(&mut self, shift: i16) {
         self.shift = shift as f32;
     }
 
