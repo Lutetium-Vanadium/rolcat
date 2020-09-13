@@ -7,18 +7,19 @@ use options::*;
 
 const HELP_STR: &'static str = "Usage: rolcat [<option>] <file>...\n
 Available Options:
-    -h:     Show this help menu
-    -dir:   Choose the direction for colour shift to occur
-            Usage: rolcat -dir <dir> <file>...
-            Available directions: [tr, t, tl, r, l, br, b, bl] where:
-                t = top,
-                b = bottom,
-                r = right,
-                l = left,
-            Default: bottom right
-    -shift: The hue shift per character
-            Usage: rolcat -shift <int> <file>...
-            Default: 2";
+    -h, --help      Show this message
+    -v, --version   Print version
+    -d, -dir        Choose the direction for colour shift to occur
+                    Usage: rolcat -dir <dir> <file>...
+                    Available directions: [tr, t, tl, r, l, br, b, bl] where:
+                        t = top,
+                        b = bottom,
+                        r = right,
+                        l = left,
+                    Default: bottom right
+    -s, -shift      The hue shift per character
+                    Usage: rolcat -shift <int> <file>...
+                    Default: 2";
 
 fn main() -> io::Result<()> {
     let args: Vec<String> = env::args().collect();
@@ -26,6 +27,7 @@ fn main() -> io::Result<()> {
     let mut options = Options::default();
 
     let len = args.len();
+    let mut h = rand::random::<f32>() * 360.;
 
     loop {
         if i == len {
@@ -33,9 +35,29 @@ fn main() -> io::Result<()> {
         }
 
         match args[i].as_str() {
-            "-h" => return Ok(println!("{}", HELP_STR)),
+            "-h" | "--help" => {
+                return Ok({
+                    let line_shift = options.line_shift();
+                    let char_shift = options.char_shift();
+                    for line in HELP_STR.split("\n") {
+                        print(line, h, char_shift);
+                        h += line_shift;
+                    }
+                })
+            }
 
-            "-dir" => {
+            "-v" | "--version" => {
+                let version = option_env!("CARGO_PKG_VERSION").unwrap_or("<unknown>");
+                return Ok({
+                    print(
+                        &format!("rolcat version: {}", version),
+                        h,
+                        options.char_shift(),
+                    );
+                });
+            }
+
+            "-d" | "-dir" => {
                 i += 1;
                 if i == len {
                     return Ok(eprintln!("A valid direction must be supplied"));
@@ -49,12 +71,12 @@ fn main() -> io::Result<()> {
                         "bl" => options.set_dir(Direction::BottomLeft),
                         "b" => options.set_dir(Direction::Bottom),
                         "br" => options.set_dir(Direction::BottomRight),
-                        dir => return Ok(eprintln!("Invalid direction {}\n\n{}", dir, HELP_STR)),
+                        dir => return Ok(eprintln!("Invalid direction {}\n\t{}", dir, HELP_STR)),
                     }
                 }
             }
 
-            "-shift" => {
+            "-s" | "-shift" => {
                 i += 1;
                 if i == len {
                     return Ok(eprintln!("A integer must be supplied"));
@@ -77,15 +99,12 @@ fn main() -> io::Result<()> {
 
     let print_name = args.len() > i + 1;
 
-    let mut h = rand::random::<f32>() * 360.;
-
     let char_shift = options.char_shift();
     let line_shift = options.line_shift();
 
     for file_name in &args[i..] {
         let file = fs::File::open(&file_name)?;
         let reader = BufReader::new(file);
-
         if print_name {
             println!("> \x1B[38;5;15m{}\x1B[0m", &file_name);
         }
