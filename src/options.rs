@@ -16,6 +16,7 @@ pub struct Options {
     shift: f32,
     direction: Direction,
     invert: bool,
+    use_stdin: bool,
 }
 
 impl Default for Options {
@@ -25,6 +26,7 @@ impl Default for Options {
             shift: 2.0,
             direction: Direction::BottomRight,
             invert: false,
+            use_stdin: true,
         }
     }
 }
@@ -60,6 +62,14 @@ impl Options {
 
     pub fn set_seed(&mut self, seed: u16) {
         self.seed = (seed % 360) as f32;
+    }
+
+    pub fn use_stdin(&self) -> bool {
+        self.use_stdin
+    }
+
+    pub fn set_use_stdin(&mut self, use_stdin: bool) {
+        self.use_stdin = use_stdin;
     }
 
     pub fn invert(&self) -> bool {

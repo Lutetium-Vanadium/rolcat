@@ -1,7 +1,11 @@
 use crate::options::*;
 use crate::print::print;
 
-const HELP_STR: &'static str = "Usage: rolcat [<option>] <file>...\n
+const HELP_STR: &'static str = "Usage: rolcat [<option>] <file>...
+
+If files are supplied, file contents are outputed.
+If no files are supplied, standard input is outputed.
+
 Available Options:
     -h, --help      Show this message
     -v, --version   Print version
@@ -124,10 +128,7 @@ pub fn parse(args: &Vec<String>) -> Option<(Options, usize)> {
         i += 1;
     }
 
-    if i == len {
-        eprintln!("A text file must be supplied");
-        return None;
-    }
+    options.set_use_stdin(i == len);
 
     Some((options, i))
 }
