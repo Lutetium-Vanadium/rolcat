@@ -3,7 +3,7 @@ pub fn print(s: &str, h: f32, shift: f32, invert: bool) {
     for chr in s.split("") {
         let (r, g, b) = get_rgb(h);
         if invert {
-            print!("\x1B[38;5;15;48;2;{};{};{}m{}\x1B[0m", r, g, b, chr);
+            print!("\x1B[38;5;16;48;2;{};{};{}m{}\x1B[0m", r, g, b, chr);
         } else {
             print!("\x1B[38;2;{};{};{}m{}\x1B[0m", r, g, b, chr);
         }
