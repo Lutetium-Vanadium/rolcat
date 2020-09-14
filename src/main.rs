@@ -18,15 +18,14 @@ fn main() -> io::Result<()> {
 
     let print_name = args.len() > i + 1;
 
-    let char_shift = options.char_shift();
     let line_shift = options.line_shift();
-    let invert = options.invert();
+    let animate = options.animate();
 
     let mut h = options.seed();
 
     if options.use_stdin() {
         for line in io::stdin().lock().lines() {
-            print(&line?, h, char_shift, invert);
+            print(&line?, h, &options);
             h = (360.0 + h + line_shift) % 360.0;
         }
     } else {
@@ -38,7 +37,7 @@ fn main() -> io::Result<()> {
             }
 
             for line in reader.lines() {
-                print(&line?, h, char_shift, invert);
+                print(&line?, h, &options);
                 h = (360.0 + h + line_shift) % 360.0;
             }
 

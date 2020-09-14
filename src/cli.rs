@@ -10,11 +10,12 @@ Available Options:
     -h, --help      Show this message
     -v, --version   Print version
     -i --invert     Colour background instead of foreground
+    -a, --animate   Animates the colour of text
     --seed          Seed from which colour starts
                     It must be a hue value
                     Usage: rolcat --seed <int> <file>...
                     Default: <random>
-    -d, -dir        Choose the direction for colour shift to occur
+    -d, --dir        Choose the direction for colour shift to occur
                     Usage: rolcat -dir <dir> <file>...
                     Available directions: [tr, t, tl, r, l, br, b, bl] where:
                         t = top,
@@ -22,7 +23,7 @@ Available Options:
                         r = right,
                         l = left,
                     Default: bottom right
-    -s, -shift      The hue shift per character
+    -s, --shift      The hue shift per character
                     Usage: rolcat -shift <int> <file>...
                     Default: 2";
 
@@ -42,9 +43,8 @@ pub fn parse(args: &Vec<String>) -> Option<(Options, usize)> {
         match args[i].as_str() {
             "-h" | "--help" => {
                 let line_shift = options.line_shift();
-                let char_shift = options.char_shift();
                 for line in HELP_STR.split("\n") {
-                    print(line, h, char_shift, options.invert());
+                    print(line, h, &options);
                     h += line_shift;
                 }
                 return None;
@@ -52,17 +52,16 @@ pub fn parse(args: &Vec<String>) -> Option<(Options, usize)> {
 
             "-v" | "--version" => {
                 let version = option_env!("CARGO_PKG_VERSION").unwrap_or("<unknown>");
-                print(
-                    &format!("rolcat version: {}", version),
-                    h,
-                    options.char_shift(),
-                    options.invert(),
-                );
+                print(&format!("rolcat version: {}", version), h, &options);
                 return None;
             }
 
             "-i" | "--invert" => {
                 options.set_invert(true);
+            }
+
+            "-a" | "--animate" => {
+                options.set_animate(true);
             }
 
             "--seed" => {
@@ -84,7 +83,7 @@ pub fn parse(args: &Vec<String>) -> Option<(Options, usize)> {
                 }
             }
 
-            "-d" | "-dir" => {
+            "-d" | "--dir" => {
                 i += 1;
                 if i == len {
                     eprintln!("A valid direction must be supplied");
@@ -107,7 +106,7 @@ pub fn parse(args: &Vec<String>) -> Option<(Options, usize)> {
                 }
             }
 
-            "-s" | "-shift" => {
+            "-s" | "--shift" => {
                 i += 1;
                 if i == len {
                     eprintln!("A integer must be supplied");

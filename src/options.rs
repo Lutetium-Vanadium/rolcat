@@ -17,6 +17,7 @@ pub struct Options {
     direction: Direction,
     invert: bool,
     use_stdin: bool,
+    animate: bool,
 }
 
 impl Default for Options {
@@ -27,6 +28,7 @@ impl Default for Options {
             direction: Direction::BottomRight,
             invert: false,
             use_stdin: true,
+            animate: false,
         }
     }
 }
@@ -78,5 +80,13 @@ impl Options {
 
     pub fn set_invert(&mut self, invert: bool) {
         self.invert = invert;
+    }
+
+    pub fn animate(&self) -> bool {
+        self.animate
+    }
+
+    pub fn set_animate(&mut self, animate: bool) {
+        self.animate = animate;
     }
 }
