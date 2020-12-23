@@ -17,10 +17,7 @@ fn main() -> io::Result<()> {
     };
 
     let print_name = args.len() > i + 1;
-
     let line_shift = options.line_shift();
-    let animate = options.animate();
-
     let mut h = options.seed();
 
     if options.use_stdin() {
